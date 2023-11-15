@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import techlab.backend.dto.courses.CourseCreateRequest;
-import techlab.backend.dto.useraccount.UserAccountInfoDTO;
+import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
 import techlab.backend.repository.jpa.courses.CoursesRepository;
 import techlab.backend.repository.jpa.security.UserSecurity;
 import techlab.backend.repository.jpa.security.UserSecurityRepository;
 import techlab.backend.service.exception.RestResponseException;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,12 +29,12 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Transactional
     @Override
-    public UserAccountInfoDTO getUserAccountInfo(Long id) {
+    public UserAccountResponseDto getUserAccountInfo(Long id) {
         Optional<UserSecurity> userSecurities = userSecurityRepository.findByUserUniqueId(id);
 
         if (userSecurities.isPresent()) {
             UserSecurity user = userSecurities.get();
-            return new UserAccountInfoDTO(
+            return new UserAccountResponseDto(
                     user.getUserUniqueId(),
                     user.getName(),
                     user.getEmail(),
@@ -61,6 +62,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             newCourse.setName(course.name());
             newCourse.setDescription(course.description());
             newCourse.setType(course.type());
+            newCourse.setCreatedAt(OffsetDateTime.now());
             return coursesRepository.saveAndFlush(newCourse);
         } else {
             throw new RestResponseException("Course with this name is already exists: " + course.name(), 400);

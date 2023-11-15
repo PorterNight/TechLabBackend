@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.courses.CourseCreateRequest;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
-import techlab.backend.dto.useraccount.UserAccountInfoDTO;
+import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
 
 import java.util.List;
@@ -29,13 +29,13 @@ public class UserAccountController {
     @ApiResponses({
             @ApiResponse(description = "Getting user account information successful", responseCode = "200",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserAccountInfoDTO.class))}),
+                            schema = @Schema(implementation = UserAccountResponseDto.class))}),
             @ApiResponse(description = "No user is found", responseCode = "400",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserAccountInfoDTO> getUserAccountInfo(@PathVariable Long id) {
-        UserAccountInfoDTO result = userAccountService.getUserAccountInfo(id);
+    public ResponseEntity<UserAccountResponseDto> getUserAccountInfo(@PathVariable Long id) {
+        UserAccountResponseDto result = userAccountService.getUserAccountInfo(id);
         return ResponseEntity.ok(result);
     }
 

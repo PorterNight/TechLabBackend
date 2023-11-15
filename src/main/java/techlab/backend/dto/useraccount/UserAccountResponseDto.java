@@ -5,7 +5,7 @@ import techlab.backend.repository.jpa.courses.Courses;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-public record UserAccountInfoDTO(
+public record UserAccountResponseDto(
         Long userUniqueId,
         String name,
         String email,
