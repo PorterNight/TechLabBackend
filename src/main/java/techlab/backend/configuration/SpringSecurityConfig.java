@@ -40,8 +40,10 @@ public class SpringSecurityConfig {
                                         "/v3/api-docs/**").permitAll()
                                 .requestMatchers("/api/v1/signup", "/api/v1/signin").permitAll()
                                 .requestMatchers("/api/v1/users/**").permitAll()//.hasAnyAuthority("admin", "user")
+                                .requestMatchers("/api/v1/courses/**").permitAll()//.hasAnyAuthority("admin", "user")
                                 .requestMatchers("/api/v1/admin/**").permitAll()//hasAuthority("admin")
-                                .anyRequest().denyAll())
+                                .requestMatchers("/api/v1/testException/**").permitAll()
+                                .anyRequest().permitAll())//.denyAll())
                 .apply(jwtConfigurer);
         //.formLogin(withDefaults())
 

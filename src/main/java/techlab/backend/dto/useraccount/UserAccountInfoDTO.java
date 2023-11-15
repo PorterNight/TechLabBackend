@@ -11,6 +11,6 @@ public record UserAccountInfoDTO(
         String email,
         String role,
         String status,
-        OffsetDateTime registeredAt,
+        OffsetDateTime createdAt,
         Set<Courses> courses
 ){}

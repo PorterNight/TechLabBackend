@@ -5,7 +5,7 @@ import techlab.backend.repository.jpa.courses.Courses;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-public record UserSecurityResponseDTO(
+public record UserSecurityResponseDto(
     Long id,
     Long userUniqueId,
     String name,

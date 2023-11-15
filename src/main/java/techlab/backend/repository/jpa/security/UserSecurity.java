@@ -3,6 +3,8 @@ package techlab.backend.repository.jpa.security;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,10 +41,10 @@ public class UserSecurity implements UserDetails {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "registered_at")
-    private OffsetDateTime registeredAt;
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
 
-    @JsonManagedReference
+    //@JsonManagedReference
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Courses> courses = new HashSet<>();
 

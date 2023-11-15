@@ -1,7 +1,6 @@
 package techlab.backend.service.auth;
 
 import techlab.backend.dto.security.*;
-import techlab.backend.repository.jpa.courses.Courses;
 
 import java.util.List;
 
@@ -10,8 +9,7 @@ public interface AuthService {
     UserSignedUpResponseDto signUpUser(UserSignUpRequest usernamePasswordDto);
     UserSignedInResponseDto signInUser(UserSignInRequest usernamePasswordDto);
 
-    UserInfo getUserInfo(String email);
+    UserSecurityResponseDto updateUserInfo(UserInfoUpdateRequest userInfoUpdateRequest);
 
-    List<UserSecurityResponseDTO> getAllUsers();
-    List<Courses> getAllCourses();
+    List<UserSecurityResponseDto> getAllUsers(Long id1, Long id2);
 }

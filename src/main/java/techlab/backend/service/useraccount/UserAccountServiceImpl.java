@@ -1,13 +1,20 @@
 package techlab.backend.service.useraccount;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import techlab.backend.dto.courses.CourseCreateRequest;
 import techlab.backend.dto.useraccount.UserAccountInfoDTO;
+import techlab.backend.repository.jpa.courses.Courses;
 import techlab.backend.repository.jpa.courses.CoursesRepository;
 import techlab.backend.repository.jpa.security.UserSecurity;
 import techlab.backend.repository.jpa.security.UserSecurityRepository;
+import techlab.backend.service.exception.RestResponseException;
 
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserAccountServiceImpl implements UserAccountService {
 
@@ -19,18 +26,51 @@ public class UserAccountServiceImpl implements UserAccountService {
         this.coursesRepository = coursesRepository;
     }
 
+    @Transactional
+    @Override
+    public UserAccountInfoDTO getUserAccountInfo(Long id) {
+        Optional<UserSecurity> userSecurities = userSecurityRepository.findByUserUniqueId(id);
+
+        if (userSecurities.isPresent()) {
+            UserSecurity user = userSecurities.get();
+            return new UserAccountInfoDTO(
+                    user.getUserUniqueId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getStatus(),
+                    user.getCreatedAt(),
+                    user.getCourses()
+            );
+        }
+        throw new RestResponseException("No user is found", 400);
+    }
 
     @Override
-    public UserAccountInfoDTO getUserAccountInfo(String email) {
-        Optional<UserSecurity> userSecurities = userSecurityRepository.findByEmail(email);
-        return userSecurities.map(userSecurity -> new UserAccountInfoDTO(
-                userSecurity.getUserUniqueId(),
-                userSecurity.getName(),
-                userSecurity.getEmail(),
-                userSecurity.getRole(),
-                userSecurity.getStatus(),
-                userSecurity.getRegisteredAt(),
-                userSecurity.getCourses()
-        )).orElse(null);
+    public List<Courses> getAllCourses() {
+        List<Courses> courses = coursesRepository.findAllByIdBetween(0L, 111L);
+        log.info(String.valueOf(courses));
+        return courses;
+    }
+
+    @Override
+    public Courses createCourse(CourseCreateRequest course) {
+        Optional<Courses> foundCourse = coursesRepository.findByName(course.name());
+        if (foundCourse.isEmpty()) {
+            Courses newCourse = new Courses();
+            newCourse.setName(course.name());
+            newCourse.setDescription(course.description());
+            newCourse.setType(course.type());
+            return coursesRepository.saveAndFlush(newCourse);
+        } else {
+            throw new RestResponseException("Course with this name is already exists: " + course.name(), 400);
+        }
+    }
+
+    @Override
+    public List<Courses> getCoursesBySearchName(String partialName) {
+        List<Courses> courses = coursesRepository.findByNameContaining(partialName);
+        log.info(String.valueOf(courses));
+        return courses;
     }
 }

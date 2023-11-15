@@ -3,6 +3,8 @@ package techlab.backend.repository.jpa.courses;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import techlab.backend.repository.jpa.security.UserSecurity;
 
 import java.time.OffsetDateTime;
@@ -31,7 +33,8 @@ public class Courses {
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
