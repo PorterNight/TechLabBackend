@@ -1,14 +1,17 @@
 package techlab.backend.repository.jpa.security;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import techlab.backend.repository.jpa.courses.Courses;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.*;
 
 @Data
 @Entity
@@ -38,8 +41,12 @@ public class UserSecurity implements UserDetails {
     @Column(name = "status")
     private String status;
 
-    public UserSecurity() {
-    }
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
+
+    //@JsonManagedReference
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Courses> courses = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
