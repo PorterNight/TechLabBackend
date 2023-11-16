@@ -12,6 +12,7 @@ import techlab.backend.repository.jpa.security.UserSecurityRepository;
 import techlab.backend.service.exception.RestResponseException;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +63,7 @@ public class UserAccountServiceImpl implements UserAccountService {
             newCourse.setName(course.name());
             newCourse.setDescription(course.description());
             newCourse.setType(course.type());
-            newCourse.setCreatedAt(OffsetDateTime.now());
+            newCourse.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
             return coursesRepository.saveAndFlush(newCourse);
         } else {
             throw new RestResponseException("Course with this name is already exists: " + course.name(), 400);

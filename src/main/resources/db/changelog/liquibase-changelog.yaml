@@ -1,0 +1,4 @@
+databaseChangeLog: 
+  - includeAll: # list of migrations
+        path: db/changelog/changesets/
+         
