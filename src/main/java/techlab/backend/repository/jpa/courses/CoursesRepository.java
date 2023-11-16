@@ -12,7 +12,7 @@ public interface CoursesRepository extends JpaRepository<Courses, Long> {
 
     Optional<Courses> findByName(String name);
 
-    List<Courses> findByNameContaining(String name);
+    List<Courses> findByNameContainingIgnoreCase(String name);
 
     List<Courses> findAllByIdBetween(Long id0, Long id1);
 

@@ -17,6 +17,7 @@ import techlab.backend.service.exception.RestResponseException;
 import techlab.backend.service.snowflake.SnowFlake;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -88,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
         userSecuritySave.setStatus("active");
         userSecuritySave.setRole("user");
         userSecuritySave.setUserUniqueId(snowFlake.nextId());
-        userSecuritySave.setCreatedAt(OffsetDateTime.now());
+        userSecuritySave.setCreatedAt(OffsetDateTime.now(ZoneOffset.UTC));
 
         if (userSecurityRepository.findByName(usernamePasswordDto.username()).isPresent()) throw
                 new RestResponseException("User '" + usernamePasswordDto.username() + "' is already registered", 400);
