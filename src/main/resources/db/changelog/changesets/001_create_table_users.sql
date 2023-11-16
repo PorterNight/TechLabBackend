@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 	role VARCHAR(75),
 	password VARCHAR(255),
 	status VARCHAR(75),
-	account_balance DECIMAL,
+	account_balance DECIMAL DEFAULT 0,
 	user_unique_id BIGINT,
     created_at TIMESTAMP WITH TIME ZONE
 );

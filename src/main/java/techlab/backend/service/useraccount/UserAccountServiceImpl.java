@@ -72,7 +72,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public List<Courses> getCoursesBySearchName(String partialName) {
-        List<Courses> courses = coursesRepository.findByNameContaining(partialName);
+        List<Courses> courses = coursesRepository.findByNameContainingIgnoreCase(partialName);
         log.info(String.valueOf(courses));
         return courses;
     }
