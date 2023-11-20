@@ -115,8 +115,9 @@ public class AuthServiceImpl implements AuthService {
                     usernamePasswordDto.password()));
 
             log.info("PostMapping UserSecurity = " + user);
-            String token = jwtTokenProvider.createToken(usernamePasswordDto.username(), user.getRole());
-            return new UserSignedInResponseDto(user.getName(), user.getUserUniqueId(), token);
+            String accessToken = jwtTokenProvider.createAccessToken(usernamePasswordDto.username(), user.getRole());
+            String refreshToken = jwtTokenProvider.createRefreshToken(usernamePasswordDto.username(), user.getRole());
+            return new UserSignedInResponseDto(user.getName(), user.getUserUniqueId(), accessToken, refreshToken);
         } catch (AuthenticationException e) {
             throw new RestResponseException("User authentication failed", 401);
         }
