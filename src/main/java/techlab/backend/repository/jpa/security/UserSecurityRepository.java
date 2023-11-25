@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
 public interface UserSecurityRepository extends JpaRepository<UserSecurity, Long> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

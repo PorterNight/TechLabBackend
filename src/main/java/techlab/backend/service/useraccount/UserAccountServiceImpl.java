@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import techlab.backend.dto.courses.CourseCreateRequest;
+import techlab.backend.dto.useraccount.CoursesId;
 import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
 import techlab.backend.repository.jpa.courses.CoursesRepository;
