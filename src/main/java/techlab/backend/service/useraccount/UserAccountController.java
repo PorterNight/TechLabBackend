@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.courses.CourseCreateRequest;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
+import techlab.backend.dto.useraccount.CoursesId;
 import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
 
@@ -71,4 +72,10 @@ public class UserAccountController {
         List<Courses> result = userAccountService.getCoursesBySearchName(name);
         return ResponseEntity.ok(result);
     }
+
+//    public ResponseEntity<String> buyCourses(@RequestBody CoursesId request) {
+//        String result = userAccountService.buyCourse(request);
+//        return ResponseEntity.ok();
+//    }
+
 }

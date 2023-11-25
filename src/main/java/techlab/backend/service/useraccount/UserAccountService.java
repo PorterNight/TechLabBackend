@@ -1,6 +1,7 @@
 package techlab.backend.service.useraccount;
 
 import techlab.backend.dto.courses.CourseCreateRequest;
+import techlab.backend.dto.useraccount.CoursesId;
 import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
 
@@ -13,4 +14,5 @@ public interface UserAccountService {
     Courses createCourse(CourseCreateRequest course);
 
     List<Courses> getCoursesBySearchName(String partialName);
+
 }
