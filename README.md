@@ -11,8 +11,8 @@ Backend проекта TechLab
 * Spring Security
 * Spring Data JPA
 * Postgres
+* Redis
 
 ### ToDo:
-* Postgres + JPA
-* Email confirmation
+
 

@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  postgresql:
+    image: postgres:14.7
+    container_name: postgresql
+    environment:
+      POSTGRES_DB: techlab
+      POSTGRES_USER: ${techlab_postgres_login}
+      POSTGRES_PASSWORD: ${techlab_postgres_password}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  liquibase:
+    image: liquibase/liquibase
+    depends_on:
+      - postgresql
+    volumes:
+      - ./src/main/resources:/liquibase/changelog
+    networks:
+      - backend
+    command: ["--url=jdbc:postgresql://postgresql:5432/techlab", "--changeLogFile=db/changelog/liquibase-changelog.yaml", "--username=${techlab_postgres_login}", "--password=${techlab_postgres_password}", "update"]
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    
+volumes:
+  pg_data:
+  redis_data:  
+
+networks:
+  backend:
