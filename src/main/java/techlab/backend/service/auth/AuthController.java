@@ -1,6 +1,5 @@
 package techlab.backend.service.auth;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
 import techlab.backend.dto.security.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -21,9 +21,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final EmailService emailService;
-
-    @Value("${spring.datasource.username}")
-    private String val;
 
     public AuthController(AuthService authService, EmailService emailService) {
         this.authService = authService;
@@ -84,18 +81,11 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-    //@Hidden
-    @PostMapping("/test")
-    public ResponseEntity<String> testMail() {
-        System.out.println(val);
-        emailService.sendUserRegisterConfirmationEmail("grht@mail.ru", "conf_token");
-        return ResponseEntity.ok("ok");
-    }
+
 //    public ResponseEntity<String> testException() {
 //        if (true) {
 //            throw new RestResponseException("fwfwfef", 401);
 //        }
 //        return ResponseEntity.ok("ok");
 //    }
-
 }
