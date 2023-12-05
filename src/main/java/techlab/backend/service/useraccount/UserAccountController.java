@@ -7,12 +7,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.courses.CourseCreateRequest;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
+import techlab.backend.dto.useraccount.AccoundFundingRequest;
 import techlab.backend.dto.useraccount.UserAccountResponseDto;
 import techlab.backend.repository.jpa.courses.Courses;
+import techlab.backend.repository.jpa.security.Account;
+import techlab.backend.repository.jpa.security.UserSecurity;
+import techlab.backend.service.auth.ConfirmationTokenService;
+import techlab.backend.service.exception.RestResponseException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -62,7 +69,7 @@ public class UserAccountController {
     @PostMapping("/courses")
     public ResponseEntity<Courses> createCourse(@RequestBody CourseCreateRequest request) {
         Courses result = userAccountService.createCourse(request);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.status(201).body(result);
     }
 
     @Operation(description = "Getting information of courses by partial name")
@@ -71,4 +78,29 @@ public class UserAccountController {
         List<Courses> result = userAccountService.getCoursesBySearchName(name);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/account-funding")
+    public ResponseEntity<String> accountFunding(@RequestBody AccoundFundingRequest request) {
+        String result = userAccountService.userAccountFunding(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/confirm-email")
+    public ResponseEntity<String> confirmEmail(@RequestParam String token) {
+        String result = userAccountService.confirmUserEmail(token);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/confirm-account-funding")
+    public ResponseEntity<String> confirmAccountFinding(@RequestParam String token) {
+        String result = userAccountService.confirmUserAccountFunding(token);
+        return ResponseEntity.ok(result);
+    }
+
+
+//    public ResponseEntity<String> buyCourses(@RequestBody CoursesId request) {
+//        String result = userAccountService.buyCourse(request);
+//        return ResponseEntity.ok();
+//    }
+
 }

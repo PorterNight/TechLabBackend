@@ -1,18 +1,18 @@
 package techlab.backend.service.auth;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
 import techlab.backend.dto.security.*;
-import techlab.backend.service.exception.RestResponseException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -20,9 +20,11 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
+    private final EmailService emailService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, EmailService emailService) {
         this.authService = authService;
+        this.emailService = emailService;
     }
 
     @Operation(description = "Register a new user by username and password",
@@ -79,12 +81,11 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-    @Hidden
-    @PostMapping("/testException")
-    public ResponseEntity<String> testException() {
-        if (true) {
-            throw new RestResponseException("fwfwfef", 401);
-        }
-        return ResponseEntity.ok("ok");
-    }
+
+//    public ResponseEntity<String> testException() {
+//        if (true) {
+//            throw new RestResponseException("fwfwfef", 401);
+//        }
+//        return ResponseEntity.ok("ok");
+//    }
 }
