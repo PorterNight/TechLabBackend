@@ -14,7 +14,6 @@ import techlab.backend.repository.jpa.security.UserSecurityRepository;
 import techlab.backend.service.auth.ConfirmationTokenService;
 import techlab.backend.service.exception.RestResponseException;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -89,14 +88,14 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Transactional
     @Override
     public String confirmUserEmail(String token) {
-        Long result = confirmationTokenService.getTokenAndDelete(token);
+        Long result = confirmationTokenService.getByTokenAndDelete(token);
 
         if (result == null) {
             log.info("[confirmUserEmail], token is not found: " + token);
             throw new RestResponseException("Email confirmation failed, no token is found", 400);
         } else {
             UserSecurity user = userSecurityRepository.findByUserUniqueId(result).orElseThrow();
-            user.setStatus("activated");
+            user.setStatus("email confirmed");
             userSecurityRepository.save(user);
             log.info("[confirmUserEmail], user: " + user.getName() + " confirmed email");
         }
@@ -106,7 +105,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Transactional
     @Override
     public String confirmUserAccountFunding(String token) {
-        Long result = confirmationTokenService.getTokenAndDelete(token);
+        Long result = confirmationTokenService.getByTokenAndDelete(token);
 
         if (result == null) {
             log.info("[confirmUserAccountFunding], token is not found: " + token);
