@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import techlab.backend.repository.jpa.security.UserSecurity;
+import techlab.backend.service.exception.RestResponseException;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -74,12 +76,16 @@ public class JwtTokenProvider {
         return false;
     }
 
+    public String getUsernameFromRefreshToken(String token) {
+        return Jwts.parser().verifyWith(REFRESH_TOKEN_SECRET_KEY).build().parseSignedClaims(token).getPayload().getSubject();
+    }
+
     public String getUsernameFromToken(String token) {
         return Jwts.parser().verifyWith(ACCESS_TOKEN_SECRET_KEY).build().parseSignedClaims(token).getPayload().getSubject();
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsernameFromToken(token));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsernameFromToken(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

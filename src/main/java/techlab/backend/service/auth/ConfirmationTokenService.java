@@ -18,7 +18,11 @@ public class ConfirmationTokenService {
         redisTemplate.opsForValue().set(token, data, ttl, timeUnit);
     }
 
-    public Long getTokenAndDelete(String token) {
+    public Long getByTokenAndDelete(String token) {
         return redisTemplate.opsForValue().getAndDelete(token);
+    }
+
+    public Long getByToken(String token) {
+        return redisTemplate.opsForValue().get(token);
     }
 }

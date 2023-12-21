@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import techlab.backend.dto.exceptions.ApiErrorResponse;
 import techlab.backend.dto.security.*;
+import techlab.backend.service.exception.RestResponseException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,11 +21,9 @@ import java.util.List;
 public class AuthController {
 
     private final AuthService authService;
-    private final EmailService emailService;
 
-    public AuthController(AuthService authService, EmailService emailService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.emailService = emailService;
     }
 
     @Operation(description = "Register a new user by username and password",
@@ -53,8 +52,14 @@ public class AuthController {
         return ResponseEntity.ok(authService.signInUser(request));
     }
 
+    @Operation(description = "Log out user")
+    @PostMapping("/logout")
+    public ResponseEntity<String> userLogOut(@RequestBody UserLogOut userLogOut) {
+        String result = authService.userLogOut(userLogOut);
+        return ResponseEntity.ok(result);
+    }
+
     @Operation(description = "Getting all information about users, from user id1 to user id2, requires the 'admin' authorities")
-    //security = @SecurityRequirement(name = "BearerJWT"))
     @ApiResponses({
             @ApiResponse(description = "Getting all information about users successful", responseCode = "200",
                     content = {@Content(mediaType = "application/json", array = @ArraySchema(
@@ -78,6 +83,19 @@ public class AuthController {
     @PutMapping("/admin/users")
     public ResponseEntity<UserSecurityResponseDto> adminUpdateUserInfo(@RequestBody UserInfoUpdateRequest request) {
         UserSecurityResponseDto result = authService.updateUserInfo(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @Operation(description = "Issue a new pair of access and refresh token",
+            responses = {
+                    @ApiResponse(description = "Issuing a new pair of access and refresh token was successful", responseCode = "200",
+                            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AccessRefreshTokenResponse.class))}),
+                    @ApiResponse(description = "Error issuing a new pair of access and refresh token", responseCode = "400",
+                            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))})})
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AccessRefreshTokenResponse> refreshToken(@RequestHeader String refreshToken) {
+        AccessRefreshTokenResponse result = authService.issueAccessRefreshToken(refreshToken);
         return ResponseEntity.ok(result);
     }
 

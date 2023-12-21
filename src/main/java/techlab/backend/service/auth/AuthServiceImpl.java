@@ -23,6 +23,7 @@ import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
 
 @Slf4j
@@ -69,6 +70,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RestResponseException("Error getting users information", 500);
         }
     }
+
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @Override
@@ -138,12 +140,44 @@ public class AuthServiceImpl implements AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usernamePasswordDto.username(),
                     usernamePasswordDto.password()));
 
-            log.info("PostMapping UserSecurity = " + user);
+
             String accessToken = jwtTokenProvider.createAccessToken(usernamePasswordDto.username(), user.getRole());
             String refreshToken = jwtTokenProvider.createRefreshToken(usernamePasswordDto.username(), user.getRole());
             return new UserSignedInResponseDto(user.getName(), user.getUserUniqueId(), accessToken, refreshToken);
         } catch (AuthenticationException e) {
+            log.info(String.valueOf(e));
             throw new RestResponseException("User authentication failed", 401);
+        }
+    }
+
+    @Transactional
+    @Override
+    public String userLogOut(UserLogOut userLogOut) {
+        confirmationTokenService.storeToken(userLogOut.refreshToken(), userLogOut.userUniqueId(), 7, DAYS);
+        return "user logout completed";
+    }
+
+    @Transactional
+    @Override
+    public AccessRefreshTokenResponse issueAccessRefreshToken(String refreshToken) {
+
+        Long userUniqueID = confirmationTokenService.getByToken(refreshToken);
+
+        if (userUniqueID != null) {
+            throw new RestResponseException("refresh token is invalidated", 400);
+        } else {
+
+            String username = jwtTokenProvider.getUsernameFromRefreshToken(refreshToken);
+
+            UserSecurity userSecurity = userSecurityRepository.findByName(username).orElseThrow(() ->
+                    new RestResponseException("No valid token for user '" + username + "' is found", 400));
+
+            String newAccessToken = jwtTokenProvider.createAccessToken(username, userSecurity.getRole());
+            String newRefreshToken = jwtTokenProvider.createRefreshToken(username, userSecurity.getRole());
+
+            confirmationTokenService.storeToken(refreshToken, userSecurity.getUserUniqueId(), 7, DAYS);
+
+            return new AccessRefreshTokenResponse(userSecurity.getUserUniqueId(), newAccessToken, newRefreshToken);
         }
     }
 }
