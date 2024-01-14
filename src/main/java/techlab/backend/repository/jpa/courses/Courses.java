@@ -30,6 +30,15 @@ public class Courses {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "group_learning")
+    private String groupLearning;
+
+    @Column(name = "self_placed_learning")
+    private String selfPlacedLearning;
+
+    @Column(name = "unit_of_lessons")
+    private String unitOfLessons;
+
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
@@ -43,4 +52,15 @@ public class Courses {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
     private Set<UserSecurity> users = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "unit_courses",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "unit_id", referencedColumnName = "id")
+    )
+    private Set<UnitOfCourse> unitOfCourses = new HashSet<>();
+
 }
